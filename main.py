@@ -1,6 +1,10 @@
 # General Imports
 from manageDB import ManageDB
 from fastapi import FastAPI
+import os
+#dotenv
+from dotenv import dotenv_values
+config = dotenv_values(".env")
 # Import Routers
 from routers import users
 

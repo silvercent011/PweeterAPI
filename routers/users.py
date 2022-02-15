@@ -1,26 +1,12 @@
-import bcrypt
 from fastapi import APIRouter, Body
+from functions.utils import hashPassword, comparePasswords, encodeToken
 from controllers.users_controller import createUser, readUser
-from models.User import User
-
 router = APIRouter(
     prefix="/users",
     tags=["users"]
 )
 
-async def hashPassword(password: str):
-    pssw = password.encode('utf-8')
-    hashed = bcrypt.hashpw(pssw, bcrypt.gensalt(10))
-    return hashed
 
-async def comparePasswords(password: str, hashed: str):
-    pssw = password.encode('utf-8')
-    hsd = hashed.encode('utf-8')
-
-    if bcrypt.checkpw(pssw, hsd):
-        return True
-    else:
-        return False
 
 @router.post('/create')
 async def user_auth(request: dict = Body):
@@ -39,8 +25,8 @@ async def user_auth(request: dict = Body):
     passwordEquals = await comparePasswords(payload['password'], data.hashed_password)
 
     if passwordEquals:
-        data.token = ''
         data.hashed_password = None
+        data.token = await encodeToken({"email":data.email})
         return data
     else:
         return False
