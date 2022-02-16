@@ -1,4 +1,5 @@
 from models.User import User
+from models.Pweet import Pweet
 
 
 async def createUser(data):
